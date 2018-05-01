@@ -4,7 +4,7 @@
   "description": "Cisco Hackathon 2018",
   "main": "pancake.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "./node_modules/nodemon/bin/nodemon.js src/pancake.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Cisco-Hackathon/Pancake-Stack/issues"
   },
-  "homepage": "https://github.com/Cisco-Hackathon/Pancake-Stack#readme"
+  "homepage": "https://github.com/Cisco-Hackathon/Pancake-Stack#readme",
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
 }

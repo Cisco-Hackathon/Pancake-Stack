@@ -1,0 +1,19 @@
+{
+  "name": "pancake-stack",
+  "version": "1.0.0",
+  "description": "Cisco Hackathon 2018",
+  "main": "pancake.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cisco-Hackathon/Pancake-Stack.git"
+  },
+  "author": "Connor Edwards, James Marshall, Rory Charman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cisco-Hackathon/Pancake-Stack/issues"
+  },
+  "homepage": "https://github.com/Cisco-Hackathon/Pancake-Stack#readme"
+}

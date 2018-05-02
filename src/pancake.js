@@ -4,6 +4,7 @@ var express = require('express'),
     https = require('https'),
     http = require('http'),
     bodyParser = require('body-parser'),
+    path = require('path'),
     morgan = require('morgan'),
     fs = require('fs'),
     app = express();
@@ -12,16 +13,20 @@ var express = require('express'),
 var api = express.Router(),
     apiPort = process.env.API_PORT || 443;
 
-// Importing API endpoints
-var user_enp = require("./routes/user_enp.js");
+// Importing API + app endpoints
+var user_enp = require("./routes/user_enp.js"),
+    app_enp = require("./routes/app_enp.js");
 
 // Importing middleware
 var middleware = require("./middleware/middleware.js");
 
 // Setting the app up
 app.use('/api', api);
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(morgan('dev'));
 app.use(middleware.checkUserCert);
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'));
 
 // Setting the API up
 api.use(bodyParser.json());
@@ -33,6 +38,8 @@ api.use(middleware.checkUserCert);
 api.get('/user', user_enp.getUserInfo);
 
 // App endpoints
+app.get('/', app_enp.home);
+app.get('/register', app_enp.register);
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {

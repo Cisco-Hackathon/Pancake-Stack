@@ -47,7 +47,9 @@ var startApi = function(apiPort) {
         var sslServer = https.createServer({
             key: fs.readFileSync('./_certs/server-key.pem'),
             cert: fs.readFileSync('./_certs/server-crt.pem'),
-            ca: fs.readFileSync('./_certs/ca-crt.pem')
+            ca: fs.readFileSync('./_certs/ca-crt.pem'),
+            requestCert: true,
+            rejectUnauthorised: false
         }, app);
 
         try {

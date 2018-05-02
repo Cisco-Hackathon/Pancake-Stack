@@ -11,8 +11,7 @@ var api = express.Router(),
     apiPort = process.env.API_PORT || 8080;
 
 // Importing API endpoints
-var _api_get = require('./routes/_api_get.js'),
-    _api_post = require('.routes/_get_post.js');
+var user_enp = require("./routes/user_enp.js");
 
 // Setting the app up
 app.use('/api', api);
@@ -23,9 +22,12 @@ api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
 
 // API endpoints
-api.get('/', function(req, res) {
+api.get('/', function(req, res) { // Health check
     res.sendStatus(200);
 });
+
+// User endpoints
+api.get('/user', user_enp.getUserInfo);
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {

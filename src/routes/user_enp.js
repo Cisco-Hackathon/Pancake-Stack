@@ -27,9 +27,7 @@ module.exports.registerUser = function(req, res) {
         } else if (count > 0) {
             res.redirect('/');
         }
-    });
-
-    checkUser.catch(function(error) {
+    }).catch(function(error) {
         throw error;
     });
 

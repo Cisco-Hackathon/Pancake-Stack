@@ -16,7 +16,7 @@ var api = express.Router(),
     apiPort = process.env.API_PORT || 443;
 
 // Importing API + app endpoints
-var user_enp = require("./routes/user_enp.js"),
+var api_enp = require("./routes/api_enp.js"),
     app_enp = require("./routes/app_enp.js");
 
 // Importing middleware
@@ -37,12 +37,15 @@ api.use(morgan('dev'));
 api.use(middleware.checkUserCert);
 
 // API endpoints
-api.get('/user', user_enp.getUserInfo);
+api.get('/auth', api_enp.authUser);
 
 // App endpoints
 app.get('/', app_enp.home);
 app.get('/register', app_enp.register);
 app.get('/dashboard', app_enp.dashboard);
+
+// Setting Mongoose promise
+mongoose.promise = global.Promise;
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {
@@ -123,5 +126,5 @@ startApi(apiPort)
     console.log("\tAuthenticated with Portainer API.");
 })
 .catch(function(error) {
-    assert(!error, "Failed to start.");
+    assert.ifError(error);
 });

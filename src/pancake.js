@@ -40,6 +40,7 @@ api.get('/user', user_enp.getUserInfo);
 // App endpoints
 app.get('/', app_enp.home);
 app.get('/register', app_enp.register);
+app.get('/dashboard', app_enp.dashboard);
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {

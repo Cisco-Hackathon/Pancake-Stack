@@ -84,7 +84,7 @@ var startApi = function(apiPort) {
 }
 
 // Starting the API
-startNonHttps(apiPort)
+startApi(apiPort)
 .then(function() {
     console.log("\tAPI Started on port: " + apiPort);
     return connectToDatabase();

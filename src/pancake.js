@@ -15,29 +15,24 @@ var api = express.Router(),
 // Importing API endpoints
 var user_enp = require("./routes/user_enp.js");
 
+// Importing middleware
+var middleware = require("./middleware/middleware.js");
+
 // Setting the app up
 app.use('/api', api);
+app.use(middleware.checkUserCert);
 app.set('view engine', 'ejs');
 
 // Setting the API up
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(morgan('dev'));
-
-api.use(function (req, res, next) {
-   var cert = req.socket.getPeerCertificate();
-   if (cert.subject) {
-       console.log(cert);
-   }
-   next();
-});
+api.use(middleware.checkUserCert);
 
 // API endpoints
-api.get('/', function(req, res) { // Health check
-    res.sendStatus(200);
-});
-
 api.get('/user', user_enp.getUserInfo);
+
+// App endpoints
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {

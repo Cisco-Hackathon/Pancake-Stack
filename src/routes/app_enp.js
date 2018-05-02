@@ -31,23 +31,21 @@ module.exports.register = function(req, res) {
                 });
 
                 portainerRegister.catch(function(error) {
-                    assert(!error, "Failed to start.");
+                    assert.ifError(error);
                 });
 
 
             });
 
             saveUser.catch(function(error) {
-                assert(!error, "Failed to start.");
+                assert.ifError(error);
             });
 
         } else if (count > 0) {
             res.redirect('/');
         }
-    });
-
-    checkUser.catch(function(error) {
-        assert(!error, "Failed to start.");
+    }).catch(function(error) {
+        assert.ifError(error);
     });
 
     var registerPortainerUser = function(userObj) {

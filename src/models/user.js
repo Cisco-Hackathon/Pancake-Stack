@@ -9,7 +9,7 @@ var user = mongoose.Schema({
         type: String,
         required: true
     },
-    dataAdded: {
+    dateAdded: {
         type: Date,
         default: Date.now()
     }

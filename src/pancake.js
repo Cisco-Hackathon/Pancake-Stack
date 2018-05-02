@@ -5,8 +5,10 @@ var express = require('express'),
     http = require('http'),
     bodyParser = require('body-parser'),
     path = require('path'),
+    request = require('request'),
     morgan = require('morgan'),
     fs = require('fs'),
+    assert = require('assert'),
     app = express();
 
 // Custom API endpoint + setting port
@@ -48,6 +50,40 @@ var connectToDatabase = function() {
     return mongoose.connect("mongodb://localhost/pancake-stack");
 }
 
+// Used to authenticate with Portainer
+var portainerApiAuth = function() {
+
+    console.log("[+] Authenticating with Portainer API...");
+
+    var username = process.env.PORTAINER_USER || "admin",
+        password = process.env.PORTAINER_PASS || "pancakestack";
+
+    return new Promise(function(resolve, reject) {
+        request.post({
+            url: 'http://52.209.115.148:9000/api/auth',
+            json: {
+                "Username": username,
+                "Password": password
+            }
+        }, function(error, httpResponse, body) {
+
+            if (error) reject(error);
+
+            if (httpResponse.statusCode == 200) {
+                var token = process.env.PORTAINER_AUTH_TOKEN = body.jwt;
+                if (token) {
+                    resolve();
+                }
+            } else {
+                reject(body);
+            }
+
+        });
+    });
+
+
+}
+
 // Used to start the API
 var startApi = function(apiPort) {
 
@@ -81,7 +117,11 @@ startApi(apiPort)
 })
 .then(function() {
     console.log("\tConnected to database.");
+    return portainerApiAuth();
+})
+.then(function() {
+    console.log("\tAuthenticated with Portainer API.");
 })
 .catch(function(error) {
-    throw error;
+    assert(!error, "Failed to start.");
 });

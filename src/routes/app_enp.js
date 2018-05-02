@@ -1,4 +1,7 @@
-var userModel = require('../models/user.js');
+var userModel = require('../models/user.js'),
+    shajs = require('sha.js'),
+    assert = require('assert'),
+    request = require('request');
 
 module.exports.home = function(req, res) {
     res.render('index');
@@ -20,11 +23,22 @@ module.exports.register = function(req, res) {
             var saveUser = newUser.save();
 
             saveUser.then(function(user) {
-                res.json(user);
+
+                var portainerRegister = registerPortainerUser(user);
+
+                portainerRegister.then(function(body) {
+                    res.json(body);
+                });
+
+                portainerRegister.catch(function(error) {
+                    assert(!error, "Failed to start.");
+                });
+
+
             });
 
             saveUser.catch(function(error) {
-                throw error;
+                assert(!error, "Failed to start.");
             });
 
         } else if (count > 0) {
@@ -33,7 +47,43 @@ module.exports.register = function(req, res) {
     });
 
     checkUser.catch(function(error) {
-        throw error;
+        assert(!error, "Failed to start.");
     });
+
+    var registerPortainerUser = function(userObj) {
+
+        var password = shajs('sha256').update(userObj).digest('hex');
+
+        return new Promise(function(resolve, reject) {
+            request.post({
+                url: 'http://52.209.115.148:9000/api/users',
+                headers: {
+                    Authorization: 'Bearer ' + process.env.PORTAINER_AUTH_TOKEN
+                },
+                json: {
+                    "Username": userObj.sid,
+                    "Password": password,
+                    "Role": 2
+                }
+            }, function(error, httpResponse, body) {
+                if (error) reject(error);
+
+                if (httpResponse.statusCode == 200) {
+                    var token = process.env.PORTAINER_AUTH_TOKEN = body.jwt;
+                    if (token) {
+                        resolve();
+                    }
+                } else {
+                    reject(body);
+                }
+            });
+        });
+
+    }
+
+}
+
+module.exports.dashboard = function(req, res) {
+
 
 }

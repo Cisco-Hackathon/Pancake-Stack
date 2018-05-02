@@ -34,7 +34,7 @@ api.get('/user', user_enp.getUserInfo);
 // Used to connect to MongoDB
 var connectToDatabase = function() {
     console.log("[+] Connecting to database...");
-    return mongoose.connect("mongodb://127.0.0.1/pancake-stack");
+    return mongoose.connect("mongodb://localhost/pancake-stack");
 }
 
 // Used to start the API

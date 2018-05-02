@@ -3,6 +3,7 @@ var express = require('express'),
     mongoose = require('mongoose'),
     https = require('https'),
     bodyParser = require('body-parser'),
+    morgan = require('morgan'),
     pem = require('pem'),
     app = express();
 
@@ -20,6 +21,7 @@ app.set('view engine', 'ejs');
 // Setting the API up
 api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
+api.use(morgan('dev'));
 
 // API endpoints
 api.get('/', function(req, res) { // Health check
@@ -53,7 +55,7 @@ var startApi = function(apiPort) {
             // Trying to start the API
             try {
                 // Starting the API
-                apiSSL.listen(apiPort, function(apiPort) {
+                var listener = apiSSL.listen(apiPort, function(apiPort) {
                     resolve();
                 });
 
@@ -69,7 +71,7 @@ var startApi = function(apiPort) {
 // Starting the API
 startApi(apiPort)
 .then(function() {
-    console.log("\tAPI Started.");
+    console.log("\tAPI Started on port: " + apiPort);
     return connectToDatabase();
 })
 .then(function() {

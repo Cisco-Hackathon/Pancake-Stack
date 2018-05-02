@@ -1,4 +1,5 @@
 // Used for getting the User's information
 module.exports.getUserInfo = function(req, res) {
-    res.json(req);
+    console.log(req);
+    res.json(req.body);
 }

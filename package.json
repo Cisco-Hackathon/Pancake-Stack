@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Cisco-Hackathon/Pancake-Stack#readme",
   "devDependencies": {
+    "morgan": "^1.9.0",
     "nodemon": "^1.17.3"
   },
   "dependencies": {

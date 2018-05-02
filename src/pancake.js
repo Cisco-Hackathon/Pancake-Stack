@@ -24,6 +24,14 @@ api.use(bodyParser.json());
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(morgan('dev'));
 
+api.use(function (req, res, next) {
+   var cert = req.socket.getPeerCertificate();
+   if (cert.subject) {
+       console.log(cert.subject);
+   }
+   next();
+});
+
 // API endpoints
 api.get('/', function(req, res) { // Health check
     res.sendStatus(200);
@@ -47,9 +55,8 @@ var startApi = function(apiPort) {
         var sslServer = https.createServer({
             key: fs.readFileSync('./_certs/server-key.pem'),
             cert: fs.readFileSync('./_certs/server-crt.pem'),
-            ca: fs.readFileSync('./_certs/ca-crt.pem'),
             requestCert: true,
-            rejectUnauthorised: false
+            rejectUnauthorized: false
         }, app);
 
         try {

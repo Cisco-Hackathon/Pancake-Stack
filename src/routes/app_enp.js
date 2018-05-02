@@ -1,11 +1,10 @@
 var userModel = require('../models/user.js');
 
-module.exports.getUserInfo = function(req, res) {
-    res.json(req.body.cert);
+module.exports.home = function(req, res) {
+    res.render('index');
 }
 
-// Used for getting the User's information
-module.exports.registerUser = function(req, res) {
+module.exports.register = function(req, res) {
 
     // Checking if the user exists in the database
     var checkUser = userModel.count({ 'sid': req.body.cert.CN }).exec();
@@ -18,10 +17,14 @@ module.exports.registerUser = function(req, res) {
                 email: req.body.cert.emailAddress
             });
 
-            var saveUser = user.save();
+            var saveUser = newUser.save();
 
             saveUser.then(function(user) {
+                res.json(user);
+            });
 
+            saveUser.catch(function(error) {
+                throw error;
             });
 
         } else if (count > 0) {

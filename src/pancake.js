@@ -80,4 +80,3 @@ startApi(apiPort)
 .catch(function(error) {
     throw error;
 });
-

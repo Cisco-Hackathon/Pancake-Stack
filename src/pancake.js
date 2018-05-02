@@ -2,6 +2,7 @@
 var express = require('express'),
     mongoose = require('mongoose'),
     https = require('https'),
+    http = require('http'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
     pem = require('pem'),
@@ -28,13 +29,27 @@ api.get('/', function(req, res) { // Health check
     res.sendStatus(200);
 });
 
-// User endpoints
 api.get('/user', user_enp.getUserInfo);
+
+// App endpoints
+app.get("/", function(req, res) {
+    res.sendStatus(200);
+});
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {
     console.log("[+] Connecting to database...");
     return mongoose.connect("mongodb://localhost/pancake-stack");
+}
+
+var startNonHttps = function(apiPort) {
+
+    return new Promise(function(resolve, reject) {
+        http.createServer(app).listen(80, function() {
+            resolve();
+        });
+    });
+
 }
 
 // Used to start the API
@@ -69,7 +84,7 @@ var startApi = function(apiPort) {
 }
 
 // Starting the API
-startApi(apiPort)
+startNonHttps(apiPort)
 .then(function() {
     console.log("\tAPI Started on port: " + apiPort);
     return connectToDatabase();

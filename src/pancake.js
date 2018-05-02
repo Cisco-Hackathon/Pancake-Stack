@@ -5,12 +5,12 @@ var express = require('express'),
     http = require('http'),
     bodyParser = require('body-parser'),
     morgan = require('morgan'),
-    pem = require('pem'),
+    fs = require('fs'),
     app = express();
 
 // Custom API endpoint + setting port
 var api = express.Router(),
-    apiPort = process.env.API_PORT || 8080;
+    apiPort = process.env.API_PORT || 443;
 
 // Importing API endpoints
 var user_enp = require("./routes/user_enp.js");
@@ -31,54 +31,32 @@ api.get('/', function(req, res) { // Health check
 
 api.get('/user', user_enp.getUserInfo);
 
-// App endpoints
-app.get("/", function(req, res) {
-    res.sendStatus(200);
-});
-
 // Used to connect to MongoDB
 var connectToDatabase = function() {
     console.log("[+] Connecting to database...");
     return mongoose.connect("mongodb://localhost/pancake-stack");
 }
 
-var startNonHttps = function(apiPort) {
-
-    return new Promise(function(resolve, reject) {
-        http.createServer(app).listen(80, function() {
-            resolve();
-        });
-    });
-
-}
-
 // Used to start the API
 var startApi = function(apiPort) {
+
+    console.log("[+] Starting HTTPS server");
+
     return new Promise(function(resolve, reject) {
 
-        // Creating an SSL certificate
-        console.log("[+] Generating SSL certificate...");
+        var sslServer = https.createServer({
+            key: fs.readFileSync('./_certs/server-key.pem'),
+            cert: fs.readFileSync('./_certs/server-crt.pem'),
+            ca: fs.readFileSync('./_certs/ca-crt.pem')
+        }, app);
 
-        pem.createCertificate({ days: 1, selfSigned: true }, function(err, keys) {
-
-            // Checking for errors
-            if (err) { reject(err); }
-
-            console.log("\tGenerated certificate.")
-            var apiSSL = https.createServer({ key: keys.serviceKey, cert: keys.certificate }, app);
-
-            // Trying to start the API
-            try {
-                // Starting the API
-                var listener = apiSSL.listen(apiPort, function(apiPort) {
-                    resolve();
-                });
-
-            } catch (error) {
-                reject(error);
-            }
-
-        });
+        try {
+            sslServer.listen(apiPort, function() {
+                resolve();
+            });
+        } catch (err) {
+            reject(err);
+        }
 
     });
 }

@@ -1,4 +1,5 @@
-var userModel = require('../models/user.js');
+var userModel = require('../models/user.js'),
+    request = require('request');
 
 module.exports.home = function(req, res) {
     res.render('index');
@@ -35,5 +36,22 @@ module.exports.register = function(req, res) {
     checkUser.catch(function(error) {
         throw error;
     });
+
+    var registerPortainerUser = function(userObj) {
+        return new Promise(function(resolve, reject) {
+            request.post({
+                url: 'http://52.209.115.148:9000/api/users',
+                body: {
+                    'Username': userObj.sid,
+                    'Password':
+                }
+            });
+        });
+    }
+
+}
+
+module.exports.dashboard = function(req, res) {
+
 
 }

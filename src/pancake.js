@@ -27,7 +27,7 @@ api.use(morgan('dev'));
 api.use(function (req, res, next) {
    var cert = req.socket.getPeerCertificate();
    if (cert.subject) {
-       console.log(cert.subject);
+       console.log(cert);
    }
    next();
 });

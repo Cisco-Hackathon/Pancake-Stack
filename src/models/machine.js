@@ -24,6 +24,10 @@ var machine = mongoose.Schema({
     machinePortVNC: {
         type: String,
         required: true
+    },
+    machineVncPassword: {
+        type: String,
+        required: true
     }
 });
 

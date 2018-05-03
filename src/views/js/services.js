@@ -21,6 +21,17 @@ pancake.factory('machine', function($q, $http) {
                 q.reject(err);
             });
             return q.promise;
+        },
+        getMachines: function() {
+            var q = $q.defer();
+            $http.get("https://localhost/api/machines")
+            .then(function(machines) {
+                q.resolve(machines.data);
+            })
+            .catch(function(err) {
+                q.reject(err);
+            });
+            return q.promise;
         }
     }
 });
@@ -31,7 +42,6 @@ pancake.factory('loginServ', function($q, $http, tokenServ) {
         login: function(login) {
             $http.get("https://localhost/api/auth")
             .then(function(response){
-                console.log(response);
                 tokenServ.setToken(response.data)
                 .catch(function(err) {
                     console.log(err);

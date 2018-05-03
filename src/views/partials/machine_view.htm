@@ -1,1 +1,7 @@
 <h1>Machines</h1>
+<table>
+    <tr ng-repeat="machine in machines">
+        <td>{{ machine.machineName }}</td>
+        <td><a target="_blank" href="http://52.209.115.148:{{ machine.machinePortNoVNC }}/?password={{ machine.machineVncPassword }}/"><button>Launch</button></a></td>
+    </tr>
+</table>

@@ -77,14 +77,12 @@ var portainerApiAuth = function() {
 
             if (error) reject(error);
 
-            if (httpResponse.statusCode == 200) {
-                var token = process.env.PORTAINER_AUTH_TOKEN = body.jwt;
-                if (token) {
-                    resolve();
-                }
-            } else {
-                reject(body);
+
+            var token = process.env.PORTAINER_AUTH_TOKEN = body.jwt;
+            if (token) {
+                resolve();
             }
+
 
         });
     });

@@ -47,14 +47,11 @@ module.exports.authUser = function(req, res) {
 
                 if (error) reject(error);
 
-                if (httpResponse.statusCode == 200) {
-                    var token = body.jwt;
-                    if (token) {
-                        resolve(token);
-                    }
-                } else {
-                    reject(body);
+                var token = body.jwt;
+                if (token) {
+                    resolve(token);
                 }
+
 
             });
         });
@@ -99,7 +96,7 @@ module.exports.newMachine = function(req, res) {
                     Authorization: 'Bearer ' + userToken
                 },
                 json: {
-                    Name: machineInfo.name,
+                    name: machineInfo.name,
                     Image: machineInfo.base.buildId,
                     Env: ["VNC_PW=" + vncPassword],
                     ExposedPorts: {

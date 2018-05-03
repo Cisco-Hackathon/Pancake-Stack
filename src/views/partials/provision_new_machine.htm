@@ -1,10 +1,14 @@
-<h1>Create a new machine</h1>
-{{ newMachine }}
-<p>Select a machine from the drop down:</p>
-<form ng-submit="startMachine(newMachine)">
-    <label>Name your machine:</label>
-    <input type="text" ng-model="newMachine.name"><br />
-    <label>Select your machine base:</label>
-    <select ng-model="newMachine.base" ng-options="x.buildName for x in machineTypes"></select><br />
-    <button type="submit">Start machine</button>
-</form>
+<div class="container">
+    <h1>Create a new machine</h1>
+    <form ng-submit="startMachine(newMachine)">
+        <div class="form-group">
+            <label for="machineName">Name your machine: </label>
+            <input type="text" ng-model="newMachine.name" class="form-control" id="machineName" placeholder="Machine name">
+        </div>
+        <div class="form-group">
+            <label for="baseImage">Select your base image: </label>
+            <select id="baseImage" ng-model="newMachine.base" ng-options="x.buildName for x in machineTypes"></select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create my machine</button>
+    </form>
+</div>

@@ -47,14 +47,11 @@ module.exports.authUser = function(req, res) {
 
                 if (error) reject(error);
 
-                if (httpResponse.statusCode == 200) {
-                    var token = body.jwt;
-                    if (token) {
-                        resolve(token);
-                    }
-                } else {
-                    reject(body);
+                var token = body.jwt;
+                if (token) {
+                    resolve(token);
                 }
+
 
             });
         });
@@ -86,7 +83,7 @@ module.exports.newMachine = function(req, res) {
     var createNewPortainerInstance = function(machineModel, machineInfo, userToken) {
 
         function generateVncPassword() {
-            return shajs('sha256').update(Date.now()).digest('hex').substring(0, 7);
+            return shajs('sha256').update(new Date().getMilliseconds()).digest('hex').substring(24, 32);
         }
 
         var vncPassword = generateVncPassword();
@@ -99,7 +96,7 @@ module.exports.newMachine = function(req, res) {
                     Authorization: 'Bearer ' + userToken
                 },
                 json: {
-                    Name: machineInfo.name,
+                    name: machineInfo.name,
                     Image: machineInfo.base.buildId,
                     Env: ["VNC_PW=" + vncPassword],
                     ExposedPorts: {
@@ -192,7 +189,7 @@ module.exports.newMachine = function(req, res) {
     }
 
     // Basic validation
-    if (machineInfo && machineInfo.name.length > 1) {
+    if (machineInfo.name && machineInfo.base.buildId) {
 
         var userToken = req.body.authToken;
 
@@ -206,7 +203,10 @@ module.exports.newMachine = function(req, res) {
             return machineModel.save();
         })
         .then(function(machineModel) {
-            res.json(machineModel);
+            res.json({
+                success: true,
+                machine: machineModel
+            });
         })
         .catch(function(err) {
             assert.ifError(err);
@@ -215,7 +215,7 @@ module.exports.newMachine = function(req, res) {
     } else {
         res.json({
             success: false,
-            message: "You must provide a machine name"
+            message: "You must pass a name and a build type"
         });
     }
 

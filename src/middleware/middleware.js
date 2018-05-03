@@ -9,6 +9,13 @@ module.exports.checkUserCert = function(req, res, next) {
     }
 }
 
-module.exports.checkUserExists = function() {
+module.exports.injectUserToken = function(req, res, next) {
+    var token = req.headers['x-access-token'];
 
+    if (token) {
+        req.body.authToken = token;
+        next();
+    } else {
+        res.json("You must be authenticated to use this route.");
+    }
 }

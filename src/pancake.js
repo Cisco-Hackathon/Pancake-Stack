@@ -28,7 +28,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(middleware.checkUserCert);
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/views'));
+app.set('views', path.join(__dirname, 'views/'));
+app.use(express.static(path.join(__dirname, 'views/')));
 
 // Setting the API up
 api.use(bodyParser.json());
@@ -38,6 +39,10 @@ api.use(middleware.checkUserCert);
 
 // API endpoints
 api.get('/auth', api_enp.authUser);
+api.get('/machines', api_enp.getMachines);
+api.get('/machineTypes', api_enp.getMachineTypes);
+
+api.post('/newMachine', middleware.injectUserToken, api_enp.newMachine);
 
 // App endpoints
 app.get('/', app_enp.home);

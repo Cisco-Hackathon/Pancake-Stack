@@ -27,7 +27,7 @@ module.exports.register = function(req, res) {
                 var portainerRegister = registerPortainerUser(user);
 
                 portainerRegister.then(function(body) {
-                    res.json(body);
+                    res.redirect('/dashboard');
                 });
 
                 portainerRegister.catch(function(error) {
@@ -42,7 +42,7 @@ module.exports.register = function(req, res) {
             });
 
         } else if (count > 0) {
-            res.redirect('/');
+            res.redirect('/dashboard');
         }
     }).catch(function(error) {
         assert.ifError(error);
@@ -83,5 +83,19 @@ module.exports.register = function(req, res) {
 
 module.exports.dashboard = function(req, res) {
 
+    // Checking if the user has registered
+    var findUser = userModel.count({ 'sid': req.body.cert.CN }).exec();
+
+    // Checking if they're registered
+    findUser.then(function(count) {
+
+        if (count > 0) { // User is already registered
+            res.render('dashboard');
+        } else {
+            res.redirect('/register');
+        }
+    }).catch(function(error) {
+        assert.ifError(error);
+    });
 
 }

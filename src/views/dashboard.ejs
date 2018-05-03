@@ -2,7 +2,19 @@
     <head>
         <title>Pancake Stack | Dashboard</title>
     </head>
-    <body>
+    <body ng-app="pancake" ng-controller="dashboard">
+
+        <span><a href="#!new_machine">+ Machine</a></span>
+        <span><a href="#!">My machines</a></span>
+
+        <ng-view></ng-view>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+
+        <script src="js/pancake.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="js/services.js"></script>
 
     </body>
 </html>

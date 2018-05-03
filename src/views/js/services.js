@@ -2,7 +2,7 @@ pancake.factory('machine', function($q, $http) {
     return {
         getMachineTypes: function() {
             var q = $q.defer();
-            $http.get('https://localhost/api/machineTypes')
+            $http.get('/api/machineTypes')
             .then(function(response) {
                 q.resolve(response.data);
             })
@@ -13,7 +13,7 @@ pancake.factory('machine', function($q, $http) {
         },
         newMachine: function(newMachine) {
             var q = $q.defer();
-            $http.post("https://localhost/api/newMachine", {
+            $http.post("/api/newMachine", {
                 machineData: newMachine
             }).then(function(response) {
                 q.resolve(response);
@@ -24,7 +24,7 @@ pancake.factory('machine', function($q, $http) {
         },
         getMachines: function() {
             var q = $q.defer();
-            $http.get("https://localhost/api/machines")
+            $http.get("/api/machines")
             .then(function(machines) {
                 q.resolve(machines.data);
             })
@@ -40,7 +40,7 @@ pancake.factory('machine', function($q, $http) {
 pancake.factory('loginServ', function($q, $http, tokenServ) {
     return {
         login: function(login) {
-            $http.get("https://localhost/api/auth")
+            $http.get("/api/auth")
             .then(function(response){
                 tokenServ.setToken(response.data)
                 .catch(function(err) {

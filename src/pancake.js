@@ -9,6 +9,7 @@ var express = require('express'),
     morgan = require('morgan'),
     fs = require('fs'),
     assert = require('assert'),
+    q = require('q'),
     app = express();
 
 // Custom API endpoint + setting port
@@ -50,7 +51,7 @@ app.get('/register', app_enp.register);
 app.get('/dashboard', app_enp.dashboard);
 
 // Setting Mongoose promise
-mongoose.promise = global.Promise;
+mongoose.promise = q.Promise;
 
 // Used to connect to MongoDB
 var connectToDatabase = function() {

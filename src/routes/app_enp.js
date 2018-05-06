@@ -7,6 +7,7 @@ module.exports.home = function(req, res) {
     res.render('index');
 }
 
+// Used to register the User
 module.exports.register = function(req, res) {
 
     // Checking if the user exists
@@ -93,6 +94,7 @@ module.exports.register = function(req, res) {
 
 }
 
+// Used to render the Dashboard page
 module.exports.dashboard = function(req, res) {
 
     // Checking if the user has registered

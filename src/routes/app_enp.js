@@ -9,44 +9,57 @@ module.exports.home = function(req, res) {
 
 module.exports.register = function(req, res) {
 
-    // Checking if the user exists in the database
-    var checkUser = userModel.count({ 'sid': req.body.cert.CN }).exec();
 
-    checkUser.then(function(count) {
-        if (count < 1) {
+    if (userExists(req.body.user.sid)) {
 
-            var newUser = new userModel({
-                sid: req.body.cert.CN,
-                email: req.body.cert.emailAddress
+        var newUser = new userModel({
+            sid: req.body.cert.CN,
+            email: req.body.cert.emailAddress
+        });
+
+        var saveUser = newUser.save();
+
+        saveUser.then(function(user) {
+
+            var portainerRegister = registerPortainerUser(user);
+
+            portainerRegister.then(function(body) {
+                res.redirect('/dashboard');
             });
 
-            var saveUser = newUser.save();
-
-            saveUser.then(function(user) {
-
-                var portainerRegister = registerPortainerUser(user);
-
-                portainerRegister.then(function(body) {
-                    res.redirect('/dashboard');
-                });
-
-                portainerRegister.catch(function(error) {
-                    assert.ifError(error);
-                });
-
-
-            });
-
-            saveUser.catch(function(error) {
+            portainerRegister.catch(function(error) {
                 assert.ifError(error);
             });
 
-        } else if (count > 0) {
-            res.redirect('/dashboard');
-        }
-    }).catch(function(error) {
-        assert.ifError(error);
-    });
+
+        });
+
+        saveUser.catch(function(error) {
+            assert.ifError(error);
+        });
+
+    } else {
+        res.redirect('/dashboard');
+    }
+
+
+    // @Return Boolean | Checks to see if user exists in database
+    function userExists(userSid) {
+        // Counting the amount of users with the provided ID in the database
+        var getUserCount = userModel.count({ 'sid': req.body.cert.CN }).exec();
+        // Waiting for request to complete
+        getUserCount.then(function(count) {
+            if (count > 0) { // User already exists
+                return true;
+            } else if (count < 1) { // User does not exist
+                return false;
+            }
+        });
+        // Catching errors
+        getUserCount.catch(function(error) {
+            assert.ifError(error);
+        });
+    }
 
     var registerPortainerUser = function(userObj) {
 

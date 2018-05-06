@@ -12,7 +12,7 @@ module.exports.register = function(req, res) {
     // Checking if the user exists
     if (userExists(req.body.user.sid)) {
         // Saving the user into the database
-        saveUserIntoLocalDB(req.body.cert);
+        saveUserIntoLocalDB(req.body.cert)
         .then(function(user) {
             // Register the user with Portainer
             return saveUserInPortainer(user);
@@ -63,7 +63,7 @@ module.exports.register = function(req, res) {
         // Creating a password for the user by taking a SHA256 of the user's profile
         var password = shajs('sha256').update(userObj).digest('hex');
         // Returning the promise
-        return new Promise(function(resolve, reject) {#
+        return new Promise(function(resolve, reject) {
             // Sending the request to the Portainer API
             request.post({
                 url: 'http://52.209.115.148:9000/api/users',

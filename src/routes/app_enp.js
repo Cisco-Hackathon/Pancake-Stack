@@ -9,32 +9,19 @@ module.exports.home = function(req, res) {
 
 module.exports.register = function(req, res) {
 
-
+    // Checking if the user exists
     if (userExists(req.body.user.sid)) {
-
-        var newUser = new userModel({
-            sid: req.body.cert.CN,
-            email: req.body.cert.emailAddress
-        });
-
-        var saveUser = newUser.save();
-
-        saveUser.then(function(user) {
-
-            var portainerRegister = registerPortainerUser(user);
-
-            portainerRegister.then(function(body) {
-                res.redirect('/dashboard');
-            });
-
-            portainerRegister.catch(function(error) {
-                assert.ifError(error);
-            });
-
-
-        });
-
-        saveUser.catch(function(error) {
+        // Saving the user into the database
+        saveUserIntoLocalDB(req.body.cert);
+        .then(function(user) {
+            // Register the user with Portainer
+            return saveUserInPortainer(user);
+        })
+        .then(function(body) {
+            // When user has been created locally and on Portainer, redirect to Dashboard
+            res.redirect('/dashboard');
+        }).catch(function(error) {
+            // Catching errors
             assert.ifError(error);
         });
 
@@ -42,8 +29,18 @@ module.exports.register = function(req, res) {
         res.redirect('/dashboard');
     }
 
+    // @Returns Promise | Stores the user into the Local database
+    function saveUserIntoLocalDB(certInfo) {
+        // Creating a new user object based on the info from the browser certificate
+        var newUser = new userModel({
+            sid: certInfo.CN,
+            email: certInfo.emailAddress
+        });
+        // Return the query promise
+        return newUser.save();
+    }
 
-    // @Return Boolean | Checks to see if user exists in database
+    // @Returns Boolean | Checks to see if user exists in database
     function userExists(userSid) {
         // Counting the amount of users with the provided ID in the database
         var getUserCount = userModel.count({ 'sid': req.body.cert.CN }).exec();
@@ -61,11 +58,13 @@ module.exports.register = function(req, res) {
         });
     }
 
-    var registerPortainerUser = function(userObj) {
-
+    // @Returns Promise | Create a user on the Portainer API
+    function saveUserInPortainer(userObj) {
+        // Creating a password for the user by taking a SHA256 of the user's profile
         var password = shajs('sha256').update(userObj).digest('hex');
-
-        return new Promise(function(resolve, reject) {
+        // Returning the promise
+        return new Promise(function(resolve, reject) {#
+            // Sending the request to the Portainer API
             request.post({
                 url: 'http://52.209.115.148:9000/api/users',
                 headers: {
